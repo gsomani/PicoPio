@@ -1,0 +1,18 @@
+; 8N1 UART transmitter, LSB first.
+;
+; Every bit lasts 8 PIO clock cycles. Instruction cost = 1 cycle + the [delay].
+; Set the state machine clock divider to sysclk / (8 * baud).
+;
+; Pins: `set pins` and `out pins` must both be mapped to the TX pin.
+
+.program uartTx
+
+.wrap_target
+    pull block          ; line idles high; block until the CPU pushes a byte
+    set pins, 0 [6]     ; start bit: 7 cycles low...
+    set x, 7            ; ...+1 cycle = 8, and load the bit counter (pin unchanged)
+bitLoop:
+    out pins, 1 [6]     ; shift one bit out of the OSR (LSB first), 7 cycles...
+    jmp x-- bitLoop     ; ...+1 cycle = 8 per bit; loops 8 times (x = 7..0)
+    set pins, 1 [6]     ; stop bit: 7 cycles high; the next `pull` adds the 8th
+.wrap
