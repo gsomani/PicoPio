@@ -29,22 +29,13 @@ bind_interrupts!(struct Irqs {
 async fn main(_spawner: Spawner) {
     let peripherals = embassy_rp::init(Default::default());
 
-
-
     // Hardware UART0: TX = GP0 , RX = GP1
     let mut uartConfig = UartConfig::default();
     uartConfig.baudrate = BAUD_RATE;
     let mut hwUart = Uart::new_blocking(peripherals.UART0, peripherals.PIN_0, peripherals.PIN_1, uartConfig);
 
-
-
-
-
-
-
     let Pio { mut common, mut sm0, .. } = Pio::new(peripherals.PIO0, Irqs);
     let txProgram = pio_file!("src/PioPrograms/UartTx.pio", select_program("uartTx"));
-    let txProgram2 = pio_file!("src/PioPrograms/UartTx2.pio", select_program("uartTx2"));
 
     let loadedProgram = common.load_program(&txProgram.program);
 
@@ -53,12 +44,11 @@ async fn main(_spawner: Spawner) {
     let mut pioConfig = PioConfig::default();
 
     pioConfig.use_program(&loadedProgram, &[]); // no side-set pins
-    pioConfig.set_set_pins(&[&txPin]); // used by `set pins`  
+    pioConfig.set_set_pins(&[&txPin]); // used by `set pins`
     pioConfig.set_out_pins(&[&txPin]); // used by `out pins`
     pioConfig.shift_out.direction = ShiftDirection::Right; // LSB first, like UART
     pioConfig.shift_out.auto_fill = false; // we use an explicit `pull`
     pioConfig.fifo_join = FifoJoin::TxOnly; // 8-deep TX FIFO
-    
 
 
     // The state machine runs at sysclk / divider. We want 8 cycles per bit.
