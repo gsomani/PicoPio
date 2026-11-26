@@ -52,11 +52,11 @@ Requirements: Rust with the `thumbv8m.main-none-eabihf` target
 [picotool](https://github.com/raspberrypi/picotool).
 
 Hold BOOTSEL while plugging in the board, then build and flash with `make`.
-Building and flashing are separate steps:
+`build` and `flash` are separate targets; `flash` runs `build` first, so it is never stale:
 
 ```sh
 make build                    # build the default binary (PioUartCustom)
-make flash                    # flash it with picotool (does not rebuild)
+make flash                    # build if missing or stale, then flash with picotool
 ```
 
 Pick another binary with `BIN`:
@@ -70,7 +70,7 @@ make flash BIN=UartCompare
 |--------------|--------|
 | `build`      | `cargo build --release --bin $(BIN)` |
 | `build-all`  | build every binary |
-| `flash`      | `picotool load -u -v -x -t elf` on the built ELF; fails if it is not built yet |
+| `flash`      | runs `build` first (no-op if up to date), then `picotool load -u -v -x -t elf` |
 | `clean`      | `cargo clean` |
 | `help`       | print usage |
 

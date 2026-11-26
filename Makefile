@@ -1,7 +1,7 @@
 # Build and flash the PicoUart example binaries.
 #
 #   make build                    build the default binary (release)
-#   make flash                    flash the already-built binary with picotool
+#   make flash                    build if needed, then flash with picotool
 #   make build BIN=UartCompare    pick another binary
 #   make build-all                build every binary
 #   make clean
@@ -24,10 +24,10 @@ build:
 build-all:
 	cargo build --release --bins
 
-# Does not rebuild: run `make build` first. Put the board in BOOTSEL mode
-# (hold BOOTSEL while plugging in USB) before flashing.
-flash:
-	@test -f $(ELF) || { echo "$(ELF) not found: run 'make build BIN=$(BIN)' first"; exit 1; }
+# Depends on build, so a missing or stale ELF is rebuilt first (cargo does
+# nothing if it is up to date). Put the board in BOOTSEL mode (hold BOOTSEL
+# while plugging in USB) before flashing.
+flash: build
 	$(PICOTOOL) load -u -v -x -t elf $(ELF)
 
 clean:
