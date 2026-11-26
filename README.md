@@ -35,6 +35,7 @@ src/
   CustomPioUartTx.rs      CustomPioUartTx: PIO state machine setup + write()
   PioPrograms/UartTx.pio  the PIO assembly program
   bin/                    the four example binaries (see above)
+Makefile                  `make build` / `make flash`
 memory.x                  RP2350 flash/RAM layout + boot-block sections
 build.rs                  makes memory.x visible to the linker
 .cargo/config.toml        target, defmt log level, `cargo run` flashing via picotool
@@ -50,13 +51,33 @@ Requirements: Rust with the `thumbv8m.main-none-eabihf` target
 (`rustup target add thumbv8m.main-none-eabihf`) and
 [picotool](https://github.com/raspberrypi/picotool).
 
-Hold BOOTSEL while plugging in the board, then:
+Hold BOOTSEL while plugging in the board, then build and flash with `make`.
+Building and flashing are separate steps:
 
 ```sh
-cargo run --release --bin PioUartCustom
+make build                    # build the default binary (PioUartCustom)
+make flash                    # flash it with picotool (does not rebuild)
 ```
 
-The runner (`picotool load -u -v -x -t elf`) flashes and starts the program.
+Pick another binary with `BIN`:
+
+```sh
+make build BIN=UartCompare
+make flash BIN=UartCompare
+```
+
+| Target       | Action |
+|--------------|--------|
+| `build`      | `cargo build --release --bin $(BIN)` |
+| `build-all`  | build every binary |
+| `flash`      | `picotool load -u -v -x -t elf` on the built ELF; fails if it is not built yet |
+| `clean`      | `cargo clean` |
+| `help`       | print usage |
+
+`BIN` defaults to `PioUartCustom`; `PICOTOOL` overrides the picotool command.
+Alternatively, `cargo run --release --bin PioUartCustom` builds and flashes in one go.
+
+The cargo runner uses the same picotool command.
 `DEFMT_LOG` defaults to `debug` in `.cargo/config.toml`. To use a debug probe
 instead, change the runner to `probe-rs run --chip RP235x`.
 
