@@ -1,4 +1,4 @@
-//! Shared building blocks for the PicoUart example binaries.
+//! Shared building blocks for the PicoPio example binaries.
 //!
 //! * [`Board`]: constants, pin map and interrupt bindings shared by every binary.
 //! * [`HwUart`]: helper to bring up the RP2350 hardware UART0.

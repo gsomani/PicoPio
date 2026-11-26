@@ -1,4 +1,4 @@
-# PicoUart
+# PicoPio
 
 Bare-metal Rust ([embassy](https://embassy.dev)) experiments on the Raspberry Pi
 Pico 2 (RP2350) that compare the **hardware UART** with a **UART transmitter

@@ -12,9 +12,9 @@ use embassy_rp::pio::Pio;
 use embassy_time::Timer;
 use {defmt_rtt as _, panic_probe as _};
 
-use PicoUart::Board::{Irqs, BAUD_RATE, SEND_INTERVAL_MS, TEST_MESSAGE};
-use PicoUart::CustomPioUartTx::CustomPioUartTx;
-use PicoUart::HwUart::newHwUart;
+use PicoPio::Board::{Irqs, BAUD_RATE, SEND_INTERVAL_MS, TEST_MESSAGE};
+use PicoPio::CustomPioUartTx::CustomPioUartTx;
+use PicoPio::HwUart::newHwUart;
 
 #[embassy_executor::main]
 async fn main(_spawner: Spawner) {

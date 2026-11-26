@@ -1,4 +1,4 @@
-# Build and flash the PicoUart example binaries.
+# Build and flash the PicoPio example binaries.
 #
 #   make build                    build the default binary (release)
 #   make flash                    build if needed, then flash with picotool

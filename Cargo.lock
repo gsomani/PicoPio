@@ -3,7 +3,7 @@
 version = 4
 
 [[package]]
-name = "PicoUart"
+name = "PicoPio"
 version = "0.1.0"
 dependencies = [
  "cortex-m",
